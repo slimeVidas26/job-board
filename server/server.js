@@ -6,40 +6,25 @@ const express = require('express');
 const expressJwt = require('express-jwt');
 const jwt = require('jsonwebtoken');
 const db = require('./db');
-
-const port = 9000;
-const jwtSecret = Buffer.from('Zn8Q5tyZ/G1MHltc4F/gTkVJMlrbKiZt', 'base64');
+const fs = require('fs')
 
 const app = express();
+const jwtSecret = Buffer.from('Zn8Q5tyZ/G1MHltc4F/gTkVJMlrbKiZt', 'base64');
 app.use(cors(), bodyParser.json(), expressJwt({
   secret: jwtSecret,
   credentialsRequired: false
 }));
 
 
-
-async function startApolloServer() {
   //plugin express to apollo server
-const typeDefs = gql`
-schema {
-query:Query
-}
-
-type Query { 
-greeting:String
-}
-`
-const resolvers = {
-  Query : {
-    greeting : ()=> "Hello World"
-  }
-}
+(async function startApolloServer() {
+const typeDefs = gql(fs.readFileSync('./schema.graphql' , {encoding:'utf8'}))
+const resolvers = require('./resolvers')
 const apolloServer = new ApolloServer({typeDefs , resolvers});
 // without this, apollo will throw an error.
 await apolloServer.start();
 apolloServer.applyMiddleware({ app, path:'/graphql' });
-
-}
+})()
 
 app.post('/login', (req, res) => {
   const {email, password} = req.body;
@@ -52,7 +37,8 @@ app.post('/login', (req, res) => {
   res.send({token});
 });
 
+
+const port = 9000;
 app.listen(port, () => console.info(`Server started on port ${port}`));
 
-startApolloServer()
 
