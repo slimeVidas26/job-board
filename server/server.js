@@ -1,3 +1,5 @@
+
+const {ApolloServer , gql} = require('apollo-server-express')
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const express = require('express');
@@ -14,6 +16,32 @@ app.use(cors(), bodyParser.json(), expressJwt({
   credentialsRequired: false
 }));
 
+
+
+async function startApolloServer() {
+  //plugin express to apollo server
+const typeDefs = gql`
+
+schema {
+query:Query
+}
+
+type Query { 
+greeting:String
+}
+`
+
+
+const resolvers = {
+  Query : {
+    greeting : ()=> "Hello World"
+  }
+}
+const apolloServer = new ApolloServer({typeDefs , resolvers});
+// without this, apollo will throw an error.
+await apolloServer.start();
+apolloServer.applyMiddleware({ app, path:'/graphql' });
+
 app.post('/login', (req, res) => {
   const {email, password} = req.body;
   const user = db.users.list().find((user) => user.email === email);
@@ -25,4 +53,7 @@ app.post('/login', (req, res) => {
   res.send({token});
 });
 
+}
 app.listen(port, () => console.info(`Server started on port ${port}`));
+startApolloServer()
+
