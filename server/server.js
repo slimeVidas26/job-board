@@ -21,7 +21,6 @@ app.use(cors(), bodyParser.json(), expressJwt({
 async function startApolloServer() {
   //plugin express to apollo server
 const typeDefs = gql`
-
 schema {
 query:Query
 }
@@ -30,8 +29,6 @@ type Query {
 greeting:String
 }
 `
-
-
 const resolvers = {
   Query : {
     greeting : ()=> "Hello World"
@@ -41,6 +38,8 @@ const apolloServer = new ApolloServer({typeDefs , resolvers});
 // without this, apollo will throw an error.
 await apolloServer.start();
 apolloServer.applyMiddleware({ app, path:'/graphql' });
+
+}
 
 app.post('/login', (req, res) => {
   const {email, password} = req.body;
@@ -53,7 +52,7 @@ app.post('/login', (req, res) => {
   res.send({token});
 });
 
-}
 app.listen(port, () => console.info(`Server started on port ${port}`));
+
 startApolloServer()
 
