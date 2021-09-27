@@ -1,10 +1,11 @@
 
 const {ApolloServer , gql} = require('apollo-server-express')
+const fs = require('fs')
+const jwt = require('jsonwebtoken');
+const db = require('./db');
 const cors = require('cors');
 const express = require('express');
 const expressJwt = require('express-jwt');
-const fs = require('fs')
-const loginRoute = require('./routes/LoginRoute')
 
 const app = express();
 const jwtSecret = Buffer.from('Zn8Q5tyZ/G1MHltc4F/gTkVJMlrbKiZt', 'base64');
@@ -12,6 +13,7 @@ app.use(cors(), express.json(), expressJwt({
   secret: jwtSecret,
   credentialsRequired: false
 }));
+
 
 
   //plugin express to apollo server
@@ -30,7 +32,16 @@ app.listen(port, () => console.log(`Example app listening at http://localhost:${
 
 
 
-app.use( loginRoute)
+app.post('/login', (req, res) => {
+  const {email, password} = req.body;
+  const user = db.users.list().find((user) => user.email === email);
+  if (!(user && user.password === password)) {
+    res.sendStatus(401);
+    return;
+  }
+  const token = jwt.sign({sub: user.id}, jwtSecret);
+  res.send({token});
+});
 
 
 
