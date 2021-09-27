@@ -17,13 +17,17 @@ app.use(cors(), bodyParser.json(), expressJwt({
 
 
   //plugin express to apollo server
-(async function startApolloServer() {
-const typeDefs = gql(fs.readFileSync('./schema.graphql' , {encoding:'utf8'}))
-const resolvers = require('./resolvers')
+(async function startApolloServer(typeDefs , resolvers) {
+ typeDefs = gql(fs.readFileSync('./schema.graphql' , {encoding:'utf8'}))
+ resolvers = require('./resolvers')
 const apolloServer = new ApolloServer({typeDefs , resolvers});
+//console.log(apolloServer.graphqlPath)
 // without this, apollo will throw an error.
 await apolloServer.start();
-apolloServer.applyMiddleware({ app, path:'/graphql' });
+apolloServer.applyMiddleware({ app });
+const port = 9000;
+//app.listen(port, () => console.info(`Server started on port ${port}`));
+app.listen(port, () => console.log(`Example app listening at http://localhost:${port}${apolloServer.graphqlPath}`))
 })()
 
 app.post('/login', (req, res) => {
@@ -38,7 +42,6 @@ app.post('/login', (req, res) => {
 });
 
 
-const port = 9000;
-app.listen(port, () => console.info(`Server started on port ${port}`));
+
 
 
