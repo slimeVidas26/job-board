@@ -3,10 +3,14 @@ const db = require('../db');
 const router = require('express').Router();
 const cors = require('cors');
 const expressJwt = require('express-jwt');
-const bodyParser = require('body-parser');
+const express = require('express');
 
 const jwtSecret = Buffer.from('Zn8Q5tyZ/G1MHltc4F/gTkVJMlrbKiZt', 'base64');
-router.use(cors(), bodyParser(), expressJwt({
+router.use(express.json());
+router.use(express.urlencoded({
+  extended: true
+}));
+router.use(cors(), expressJwt({
     secret: jwtSecret,
     credentialsRequired: false
   }));
