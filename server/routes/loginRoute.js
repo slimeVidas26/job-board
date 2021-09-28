@@ -6,13 +6,10 @@ const expressJwt = require('express-jwt');
 const express = require('express');
 
 const jwtSecret = Buffer.from('Zn8Q5tyZ/G1MHltc4F/gTkVJMlrbKiZt', 'base64');
-router.use(express.json());
-router.use(express.urlencoded({
-  extended: true
-}));
-router.use(cors(), expressJwt({
-    secret: jwtSecret,
-    credentialsRequired: false
+router.use(cors(),
+       express.json(),
+       express.urlencoded({extended: true}),
+       expressJwt({secret: jwtSecret,credentialsRequired: false
   }));
 
 
