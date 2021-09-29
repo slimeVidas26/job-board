@@ -12,6 +12,7 @@ const options = {
           title
           description
         company {
+         name
           id
         }
         }

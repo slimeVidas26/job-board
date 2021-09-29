@@ -2,7 +2,8 @@ schema {
 query:Query
 }
 
-type Query { 
+type Query {
+job(id:ID!) : Job
 jobs:[Job]
 }
 

@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { isLoggedIn, logout } from './auth';
 import { CompanyDetail } from './CompanyDetail';
 import { LoginForm } from './LoginForm';
-import { JobBoard } from './JobBoard';
+import { JobBoard } from './JobBoardLess';
 import { JobDetail } from './JobDetail';
 import { JobForm } from './JobForm';
 import { NavBar } from './NavBar';
