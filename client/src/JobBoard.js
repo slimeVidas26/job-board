@@ -17,7 +17,7 @@ export class JobBoard extends Component {
   
   render() {
     const {jobs} = this.state;
-    return (
+    return jobs && (
       <div>
         <h1 className="title">Job Board</h1>
         <JobList jobs={jobs} />
